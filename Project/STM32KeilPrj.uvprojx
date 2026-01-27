@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F10X_HD,USE_STDPERIPH_DRIVER,ARM_MATH_CM3</Define>
               <Undefine></Undefine>
-              <IncludePath>..\App\Main;..\App\DataType;..\HW\RCC;..\HW\Timer;..\HW\UART1;..\FW\inc;..\ARM\NVIC;..\ARM\SysTick;..\ARM\System;..\App\LED;..\APP\PackUnpack;..\APP\ProcHostCmd;..\HW\DAC;..\HW\ADC;..\App\SendDataToHost;..\App\RESP_HeartRate_Calculate;..\App\Filter;..\App\RESP;..\ARM\DSPlib\Include;..\App\KeyOne</IncludePath>
+              <IncludePath>..\App\Main;..\App\DataType;..\HW\RCC;..\HW\Timer;..\HW\UART1;..\FW\inc;..\ARM\NVIC;..\ARM\SysTick;..\ARM\System;..\App\LED;..\APP\PackUnpack;..\APP\ProcHostCmd;..\HW\DAC;..\HW\ADC;..\App\SendDataToHost;..\App\SPO2_HeartRate_Calculate;..\App\Filter;..\App\SPO2;..\ARM\DSPlib\Include;..\App\KeyOne</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -409,14 +409,14 @@
               <FilePath>..\App\KeyOne\ProcKeyOne.c</FilePath>
             </File>
             <File>
-              <FileName>RESP.c</FileName>
+              <FileName>SPO2.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\App\RESP\RESP.c</FilePath>
+              <FilePath>..\App\SPO2\SPO2.c</FilePath>
             </File>
             <File>
-              <FileName>RESP_HeartRate_Calculate.c</FileName>
+              <FileName>SPO2_HeartRate_Calculate.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\App\RESP_HeartRate_Calculate\RESP_HeartRate_Calculate.c</FilePath>
+              <FilePath>..\App\SPO2_HeartRate_Calculate\SPO2_HeartRate_Calculate.c</FilePath>
             </File>
           </Files>
         </Group>

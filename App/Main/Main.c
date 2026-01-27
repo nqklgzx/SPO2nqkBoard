@@ -30,9 +30,9 @@
 #include "ProcKeyOne.h"
 #include "DAC.h"
 #include "ADC.h"
-#include "RESP.h"
+#include "SPO2.h"
 #include "Filter.h"
-#include "RESP_HeartRate_Calculate.h"
+#include "SPO2_HeartRate_Calculate.h"
 
 /*********************************************************************************************************
 *                                              宏定义
@@ -93,7 +93,7 @@ static  void  InitHardware(void)
   InitADC();          //初始化ADC模块
   InitProcKeyOne();
   InitKeyOne();
-  RESP_Init();   //初始化RESP模块
+  SPO2_Init();   //初始化SPO2模块
 }
 
 /*********************************************************************************************************
@@ -115,7 +115,7 @@ static  void  Proc2msTask(void)
     {       
 
     }
-    RESP_Task();
+    SPO2_Task();
        
     LEDFlicker(250);//调用闪烁函数     
     ScanKeyTask();

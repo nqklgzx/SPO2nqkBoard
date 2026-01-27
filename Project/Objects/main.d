@@ -30,6 +30,6 @@
 .\objects\main.o: ..\App\KeyOne\ProcKeyOne.h
 .\objects\main.o: ..\HW\DAC\DAC.h
 .\objects\main.o: ..\HW\ADC\ADC.h
-.\objects\main.o: ..\App\RESP\RESP.h
+.\objects\main.o: ..\App\SPO2\SPO2.h
 .\objects\main.o: ..\App\Filter\Filter.h
-.\objects\main.o: ..\App\RESP_HeartRate_Calculate\RESP_HeartRate_Calculate.h
+.\objects\main.o: ..\App\SPO2_HeartRate_Calculate\SPO2_HeartRate_Calculate.h

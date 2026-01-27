@@ -279,7 +279,7 @@
       <GroupNumber>1</GroupNumber>
       <FileNumber>4</FileNumber>
       <FileType>1</FileType>
-      <tvExp>1</tvExp>
+      <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
       <PathWithFileName>..\App\Filter\Filter.c</PathWithFileName>
@@ -291,7 +291,7 @@
       <GroupNumber>1</GroupNumber>
       <FileNumber>5</FileNumber>
       <FileType>1</FileType>
-      <tvExp>0</tvExp>
+      <tvExp>1</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
       <PathWithFileName>..\App\KeyOne\ProcKeyOne.c</PathWithFileName>
@@ -303,11 +303,11 @@
       <GroupNumber>1</GroupNumber>
       <FileNumber>6</FileNumber>
       <FileType>1</FileType>
-      <tvExp>1</tvExp>
+      <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\App\RESP\RESP.c</PathWithFileName>
-      <FilenameWithoutPath>RESP.c</FilenameWithoutPath>
+      <PathWithFileName>..\App\SPO2\SPO2.c</PathWithFileName>
+      <FilenameWithoutPath>SPO2.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -318,8 +318,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\App\RESP_HeartRate_Calculate\RESP_HeartRate_Calculate.c</PathWithFileName>
-      <FilenameWithoutPath>RESP_HeartRate_Calculate.c</FilenameWithoutPath>
+      <PathWithFileName>..\App\SPO2_HeartRate_Calculate\SPO2_HeartRate_Calculate.c</PathWithFileName>
+      <FilenameWithoutPath>SPO2_HeartRate_Calculate.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

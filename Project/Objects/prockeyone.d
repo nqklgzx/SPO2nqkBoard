@@ -4,5 +4,5 @@
 .\objects\prockeyone.o: ..\HW\UART1\UART1.h
 .\objects\prockeyone.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\prockeyone.o: ..\App\Filter\Filter.h
-.\objects\prockeyone.o: ..\App\RESP\RESP.h
-.\objects\prockeyone.o: ..\App\RESP_HeartRate_Calculate\RESP_HeartRate_Calculate.h
+.\objects\prockeyone.o: ..\App\SPO2\SPO2.h
+.\objects\prockeyone.o: ..\App\SPO2_HeartRate_Calculate\SPO2_HeartRate_Calculate.h

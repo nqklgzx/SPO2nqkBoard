@@ -36,28 +36,28 @@
 /*********************************************************************************************************
 *                                              枚举结构体定义
 *********************************************************************************************************/
-RESP_Filter_Smooth respFilter;
+SPO2_Filter_Smooth SPO2Filter;
 /*********************************************************************************************************
 *                                              内部变量
 *********************************************************************************************************/
-u8 RESP_Filter_Flag='1';    //默认有滤波
+u8 SPO2_Filter_Flag='1';    //默认有滤波
 
-//切比雪夫滤波器[0.5-high]
-static arm_biquad_casd_df1_inst_f32 RESP_Filter_butterworth_inst;
-const uint8_t RESP_Filter_butterworth_STAGES = 1;
-static float32_t RESP_Filter_butterworth_state[RESP_Filter_butterworth_STAGES * 4] = {0};// 3. 状态缓存数组（参数4：pState）：2级 × 4 = 8个元素，初始化为0
-const float32_t RESP_Filter_butterworth_Coeffs[5 * RESP_Filter_butterworth_STAGES] = {  // 2级滤波器，每级5个系数
-1 , -1.999980260758728034531372941273730248213 , 1 , 1.93749365972692122461751296214060857892 , -0.939406846029880115978016874578315764666
-};
-//增益
-static float  RESP_Filter_butterworth_NotchInc = 
-0.96922990940495779010888099946896545589  ;      
+////切比雪夫滤波器[0.5-high]
+//static arm_biquad_casd_df1_inst_f32 SPO2_Filter_butterworth_inst;
+//const uint8_t SPO2_Filter_butterworth_STAGES = 1;
+//static float32_t SPO2_Filter_butterworth_state[SPO2_Filter_butterworth_STAGES * 4] = {0};// 3. 状态缓存数组（参数4：pState）：2级 × 4 = 8个元素，初始化为0
+//const float32_t SPO2_Filter_butterworth_Coeffs[5 * SPO2_Filter_butterworth_STAGES] = {  // 2级滤波器，每级5个系数
+//1 , -1.999980260758728034531372941273730248213 , 1 , 1.93749365972692122461751296214060857892 , -0.939406846029880115978016874578315764666
+//};
+////增益
+//static float  SPO2_Filter_butterworth_NotchInc = 
+//0.96922990940495779010888099946896545589  ;      
 
 //切比雪夫滤波器[low-15]
-static arm_biquad_casd_df1_inst_f32 RESP_Filter_chebyshev_ii_inst;
-const uint8_t RESP_Filter_chebyshev_ii_STAGES = 5;
-static float32_t RESP_Filter_chebyshev_ii_state[RESP_Filter_chebyshev_ii_STAGES * 4] = {0};// 3. 状态缓存数组（参数4：pState）：2级 × 4 = 8个元素，初始化为0
-const float32_t RESP_Filter_chebyshev_ii_Coeffs[5 * RESP_Filter_chebyshev_ii_STAGES] = {  // 2级滤波器，每级5个系数
+static arm_biquad_casd_df1_inst_f32 SPO2_Filter_chebyshev_ii_inst;
+const uint8_t SPO2_Filter_chebyshev_ii_STAGES = 5;
+static float32_t SPO2_Filter_chebyshev_ii_state[SPO2_Filter_chebyshev_ii_STAGES * 4] = {0};// 3. 状态缓存数组（参数4：pState）：2级 × 4 = 8个元素，初始化为0
+const float32_t SPO2_Filter_chebyshev_ii_Coeffs[5 * SPO2_Filter_chebyshev_ii_STAGES] = {  // 2级滤波器，每级5个系数
 1 , -1.355816 , 1 , 1.6012297 , -0.8821587,
 1 , -1.236562 , 1 , 1.4033081 , -0.6724096,
 1 , -0.910095 , 1 , 1.2093896 , -0.4823843,
@@ -65,7 +65,7 @@ const float32_t RESP_Filter_chebyshev_ii_Coeffs[5 * RESP_Filter_chebyshev_ii_STA
 1 , 1.5376899 , 1 , 0.9283247 , -0.2220609
 };
 //增益
-static float  RESP_Filter_chebyshev_ii_NotchInc = 
+static float  SPO2_Filter_chebyshev_ii_NotchInc = 
 0.43610078046   *                                                                                             
 0.35248652973   *                                                                                            
 0.25047572054   *                                                                                             
@@ -74,14 +74,14 @@ static float  RESP_Filter_chebyshev_ii_NotchInc =
 /*********************************************************************************************************
 *                                              内部函数声明
 *********************************************************************************************************/
-void RESP_Filter_IIR(float* x);               //滤波
+void SPO2_Filter_IIR(float* x);               //滤波
 double  IIRFilterc(const double* b, const double* a, int n, int ns, double* px, double* py, double x);
 void BaselineFilterTask(float *dataAddr);                  
 /*********************************************************************************************************
 *                                              内部函数实现
 *********************************************************************************************************/
 /*********************************************************************************************************
-* 函数名称: RESP_Filter_IIR
+* 函数名称: SPO2_Filter_IIR
 * 函数功能: 呼吸IIR滤波
 * 输入参数: double* x ：输入数据的地址
             int N ：数据个数
@@ -90,28 +90,28 @@ void BaselineFilterTask(float *dataAddr);
 * 创建日期: 2025年11月26日
 * 注    意:
 *********************************************************************************************************/
-void RESP_Filter_IIR(float* x)
+void SPO2_Filter_IIR(float* x)
 {
   
     arm_biquad_cascade_df1_f32
   (
-      &RESP_Filter_chebyshev_ii_inst,  // S：已初始化的实例
+      &SPO2_Filter_chebyshev_ii_inst,  // S：已初始化的实例
       x,                              // pIn：输入数据
       x,                              // pOut：输出数据
       1                               // blockSize：单次处理32点
   );
-  (*x) *= RESP_Filter_chebyshev_ii_NotchInc;
+  (*x) *= SPO2_Filter_chebyshev_ii_NotchInc;
 
   BaselineFilterTask(x);
 //    arm_biquad_cascade_df1_f32
 //  (
-//      &RESP_Filter_butterworth_inst,  // S：已初始化的实例
+//      &SPO2_Filter_butterworth_inst,  // S：已初始化的实例
 //      x,                              // pIn：输入数据
 //      x,                              // pOut：输出数据
 //      1                               // blockSize：单次处理32点
 //  );
 
-//  (*x) *= RESP_Filter_butterworth_NotchInc;
+//  (*x) *= SPO2_Filter_butterworth_NotchInc;
 }
 
 /*********************************************************************************************************
@@ -194,7 +194,7 @@ void BaselineFilterTask(float *dataAddr)
 * 创建日期：2024年01月22日
 * 注  意：  采用IIR型滤波器
 **********************************************************************************************************/
-void RESP_Filter_Smooth_Init(RESP_Filter_Smooth *filter) 
+void SPO2_Filter_Smooth_Init(SPO2_Filter_Smooth *filter) 
 {
   int i = 0;
   for (i = 0; i < EC_SmoothFILTER_WINDOW_SIZE; i++) 
@@ -213,7 +213,7 @@ void RESP_Filter_Smooth_Init(RESP_Filter_Smooth *filter)
 * 创建日期：2024年01月22日
 * 注  意：  采用IIR型滤波器
 **********************************************************************************************************/
-float Filter_Update(RESP_Filter_Smooth *filter, float newInput) {
+float Filter_Update(SPO2_Filter_Smooth *filter, float newInput) {
     // 1. 从总和中减去最老的一个数据（即将被覆盖的数据）
     filter->sum -= filter->buffer[filter->head];
 
@@ -237,7 +237,7 @@ float Filter_Update(RESP_Filter_Smooth *filter, float newInput) {
 *                                              API函数实现
 *********************************************************************************************************/
 /*********************************************************************************************************
-* 函数名称: RESP_Filter
+* 函数名称: SPO2_Filter
 * 函数功能: 呼吸滤波任务主入口
 * 输入参数: void
 * 输出参数: void
@@ -245,15 +245,15 @@ float Filter_Update(RESP_Filter_Smooth *filter, float newInput) {
 * 创建日期: 2025年11月26日
 * 注    意:
 *********************************************************************************************************/
-void RESP_Filter(float* x)
+void SPO2_Filter(float* x)
 {
-  switch(RESP_Filter_Flag)
+  switch(SPO2_Filter_Flag)
   {
     case '0':
       break;
     case '1':
-      RESP_Filter_IIR(x);
-      *x = Filter_Update(&respFilter, *x);
+      SPO2_Filter_IIR(x);
+      *x = Filter_Update(&SPO2Filter, *x);
       break;
     default:
       printf("ERROR:滤波器选择错误");
@@ -272,22 +272,22 @@ void RESP_Filter(float* x)
 void InitFilter()
 {
   
-  arm_biquad_cascade_df1_init_f32//巴特沃斯
-  (
-    &RESP_Filter_butterworth_inst,  // S：实例地址
-    RESP_Filter_butterworth_STAGES,               // numStages：2级（4阶）
-    (float32_t*)&RESP_Filter_butterworth_Coeffs,   // pCoeffs：带通系数
-    RESP_Filter_butterworth_state     // pState：状态缓存
-  );
+//  arm_biquad_cascade_df1_init_f32//巴特沃斯
+//  (
+//    &SPO2_Filter_butterworth_inst,  // S：实例地址
+//    SPO2_Filter_butterworth_STAGES,               // numStages：2级（4阶）
+//    (float32_t*)&SPO2_Filter_butterworth_Coeffs,   // pCoeffs：带通系数
+//    SPO2_Filter_butterworth_state     // pState：状态缓存
+//  );
   
-  RESP_Filter_Smooth_Init(&respFilter);
+  SPO2_Filter_Smooth_Init(&SPO2Filter);
   
     arm_biquad_cascade_df1_init_f32//切比雪夫II
   (
-    &RESP_Filter_chebyshev_ii_inst,  // S：实例地址
-    RESP_Filter_chebyshev_ii_STAGES,               // numStages：2级（4阶）
-    (float32_t*)&RESP_Filter_chebyshev_ii_Coeffs,   // pCoeffs：带通系数
-    RESP_Filter_chebyshev_ii_state     // pState：状态缓存
+    &SPO2_Filter_chebyshev_ii_inst,  // S：实例地址
+    SPO2_Filter_chebyshev_ii_STAGES,               // numStages：2级（4阶）
+    (float32_t*)&SPO2_Filter_chebyshev_ii_Coeffs,   // pCoeffs：带通系数
+    SPO2_Filter_chebyshev_ii_state     // pState：状态缓存
   );
 
 }

@@ -20,8 +20,8 @@
 #include "ProcKeyOne.h"
 #include "UART1.h"
 #include "Filter.h"
-#include "RESP.h"
-#include "RESP_HeartRate_Calculate.h"
+#include "SPO2.h"
+#include "SPO2_HeartRate_Calculate.h"
 
 /*********************************************************************************************************
 *                                              ºê¶¨Òå
@@ -72,8 +72,8 @@ void InitProcKeyOne(void)
 void  ProcKeyDownKey1(void)
 {  
   //printf("KEY1 PUSH DOWN\r\n");  //´òÓ¡°´¼ü×´Ì¬
-  RESP_StartInfo_Change(1-RESP_StartInfo_Get());
-  printf("Change RESP_StartInfo:%c\n",RESP_StartInfo_Get());
+  SPO2_StartInfo_Change(1-SPO2_StartInfo_Get());
+  printf("Change SPO2_StartInfo:%c\n",SPO2_StartInfo_Get());
 }
 
 /*********************************************************************************************************
@@ -102,17 +102,17 @@ void  ProcKeyUpKey1(void)
 void  ProcKeyDownKey2(void)
 {
   //printf("KEY2 PUSH DOWN\r\n");   //´òÓ¡°´¼ü×´Ì¬
-  if(RESP_Filter_Flag == '0') 
+  if(SPO2_Filter_Flag == '0') 
   {
-    RESP_Filter_Flag = '1';      
-    printf("[[4,%c]]\r\n",RESP_Filter_Flag); 
+    SPO2_Filter_Flag = '1';      
+    printf("[[4,%c]]\r\n",SPO2_Filter_Flag); 
   }
   else 
   {
-    RESP_Filter_Flag = '0';
-    printf("[[4,%c]]\r\n",RESP_Filter_Flag); 
+    SPO2_Filter_Flag = '0';
+    printf("[[4,%c]]\r\n",SPO2_Filter_Flag); 
   }
-  //printf("Change RESP_Filter_Flag:%c\n",RESP_Filter_Flag);
+  //printf("Change SPO2_Filter_Flag:%c\n",SPO2_Filter_Flag);
 }
 
 /*********************************************************************************************************
@@ -141,7 +141,7 @@ void  ProcKeyUpKey2(void)
 void  ProcKeyDownKey3(void)
 {
   //printf("KEY3 PUSH DOWN\r\n");   //´òÓ¡°´¼ü×´Ì¬
-  RESP_HR_Send();
+  SPO2_HR_Send();
 }
 
 /*********************************************************************************************************

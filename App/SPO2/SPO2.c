@@ -47,11 +47,11 @@
 #define SPO2_ADC_NO 0
 #define SPO2_ADC_YES 1
 
-#define SPO2_RED_ON 1
-#define SPO2_RED_OFF 0
+#define SPO2_RED_ON_Flag 1
+#define SPO2_RED_OFF_Flag 0
 
-#define SPO2_IR_ON 1
-#define SPO2_IR_OFF 0
+#define SPO2_IR_ON_Flag 1
+#define SPO2_IR_OFF_Flag 0
 /*********************************************************************************************************
 *                                              枚举结构体定义
 *********************************************************************************************************/
@@ -66,7 +66,7 @@ int SPO2_Regular_Flag = 0;//初始不进入ADC阅读
 /*********************************************************************************************************
 *                                              内部函数声明
 *********************************************************************************************************/
-static u8 SPO2_LEADOFF_Check(void);              //检查导联脱落（这里引脚待补充）
+//static u8 SPO2_LEADOFF_Check(void);              //检查导联脱落（这里引脚待补充）
 static u8 SPO2_Start_Check(void);                //检查开始测量信号Flag
 static void SPO2_ADC_Read(void);          //存入单个读取的数据，返回目前数组数据量
 static void SPO2_Wave_Send(void);                //发送数据
@@ -354,20 +354,20 @@ u8 SPO2_StartInfo_Get()
 *********************************************************************************************************/
 void SPO2_Light_Change(int RED,int IR)
 {
-  if(RED==SPO2_RED_ON)
+  if(RED==SPO2_RED_ON_Flag)
   {
     SPO2_RED_ON
   }
-  else if(RED == SPO2_RED_OFF)
+  else if(RED == SPO2_RED_OFF_Flag)
   {
     SPO2_RED_OFF
   }
   
-  if(IR==SPO2_IR_ON)
+  if(IR==SPO2_IR_ON_Flag)
   {
     SPO2_IR_ON
   }
-  else if(IR== SPO2_IR_OFF)
+  else if(IR== SPO2_IR_OFF_Flag)
   {
     SPO2_IR_OFF
   }
@@ -386,14 +386,14 @@ void SPO2_Light_Switch()
   static int i=0;    
    switch(i)
   {
-    case 0: SPO2_Light_Change(SPO2_RED_OFF,SPO2_IR_ON);i++;break;
-    case 1: SPO2_Light_Change(SPO2_RED_OFF,SPO2_IR_OFF);i++;break;
-    case 2: SPO2_Light_Change(SPO2_RED_ON,SPO2_IR_OFF);i++;break;//修改Flag，下次读取ADC
+    case 0: SPO2_Light_Change(SPO2_RED_OFF_Flag,SPO2_IR_ON_Flag);i++;break;
+    case 1: SPO2_Light_Change(SPO2_RED_OFF_Flag,SPO2_IR_OFF_Flag);i++;break;
+    case 2: SPO2_Light_Change(SPO2_RED_ON_Flag,SPO2_IR_OFF_Flag);i++;break;//修改Flag，下次读取ADC
     case 3: 
             SPO2_ADC_Read();          //存入单个读取的数据，返回目前数组数据量
             SPO2_Filter(&SPO2_WaveData[WAVE_NUM]);                   //滤波
             SPO2_Wave_Send();                //发送数据      
-            SPO2_Light_Change(SPO2_RED_OFF,SPO2_IR_OFF);i++;SPO2_Regular_Flag = SPO2_ADC_YES;break;
-    case 4: SPO2_Light_Change(SPO2_RED_OFF,SPO2_IR_OFF);i=0;SPO2_Regular_Flag = SPO2_ADC_NO;break;   
+            SPO2_Light_Change(SPO2_RED_OFF_Flag,SPO2_IR_OFF_Flag);i++;SPO2_Regular_Flag = SPO2_ADC_YES;break;
+    case 4: SPO2_Light_Change(SPO2_RED_OFF_Flag,SPO2_IR_OFF_Flag);i=0;SPO2_Regular_Flag = SPO2_ADC_NO;break;   
   }
 }
