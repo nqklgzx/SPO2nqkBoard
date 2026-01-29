@@ -141,7 +141,6 @@ void  ProcKeyUpKey2(void)
 void  ProcKeyDownKey3(void)
 {
   //printf("KEY3 PUSH DOWN\r\n");   //´òÓ¡°´¼ü×´Ì¬
-  SPO2_HR_Send();
 }
 
 /*********************************************************************************************************

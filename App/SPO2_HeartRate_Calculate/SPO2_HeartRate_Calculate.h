@@ -36,8 +36,7 @@
 *                                              API函数声明
 *********************************************************************************************************/
 //函数声明
-void SPO2_HeartRate_Calculate(void);      //计算心率
-void SPO2_HR_Send(void);
+void SPO2_Calculate(void);      //计算心率
 
 
 #endif

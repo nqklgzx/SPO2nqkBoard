@@ -4,3 +4,4 @@
 .\objects\spo2_heartrate_calculate.o: ..\App\DataType\DataType.h
 .\objects\spo2_heartrate_calculate.o: ..\HW\UART1\UART1.h
 .\objects\spo2_heartrate_calculate.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\spo2_heartrate_calculate.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
