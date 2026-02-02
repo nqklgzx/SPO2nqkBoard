@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F10X_HD,USE_STDPERIPH_DRIVER,ARM_MATH_CM3</Define>
               <Undefine></Undefine>
-              <IncludePath>..\App\Main;..\App\DataType;..\HW\RCC;..\HW\Timer;..\HW\UART1;..\FW\inc;..\ARM\NVIC;..\ARM\SysTick;..\ARM\System;..\App\LED;..\APP\PackUnpack;..\APP\ProcHostCmd;..\HW\DAC;..\HW\ADC;..\App\SendDataToHost;..\App\SPO2_HeartRate_Calculate;..\App\Filter;..\App\SPO2;..\ARM\DSPlib\Include;..\App\KeyOne</IncludePath>
+              <IncludePath>..\App\Main;..\App\DataType;..\HW\RCC;..\HW\Timer;..\HW\UART1;..\FW\inc;..\ARM\NVIC;..\ARM\SysTick;..\ARM\System;..\App\LED;..\APP\PackUnpack;..\APP\ProcHostCmd;..\HW\DAC;..\HW\ADC;..\App\SendDataToHost;..\App\SPO2_HeartRate_Calculate;..\App\Filter;..\App\SPO2;..\ARM\DSPlib\Include;..\App\KeyOne;..\App\SPO2_Adjust</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -417,6 +417,11 @@
               <FileName>SPO2_HeartRate_Calculate.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\App\SPO2_HeartRate_Calculate\SPO2_HeartRate_Calculate.c</FilePath>
+            </File>
+            <File>
+              <FileName>SPO2_Adjust.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\App\SPO2_Adjust\SPO2_Adjust.c</FilePath>
             </File>
           </Files>
         </Group>

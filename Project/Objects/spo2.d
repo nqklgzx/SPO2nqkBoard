@@ -28,3 +28,4 @@
 .\objects\spo2.o: ..\FW\inc\misc.h
 .\objects\spo2.o: ..\App\SPO2_HeartRate_Calculate\SPO2_HeartRate_Calculate.h
 .\objects\spo2.o: ..\HW\DAC\DAC.h
+.\objects\spo2.o: ..\App\SPO2_Adjust\SPO2_Adjust.h

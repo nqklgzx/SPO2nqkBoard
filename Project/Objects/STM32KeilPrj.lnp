@@ -6,6 +6,7 @@
 ".\objects\prockeyone.o"
 ".\objects\spo2.o"
 ".\objects\spo2_heartrate_calculate.o"
+".\objects\spo2_adjust.o"
 ".\objects\rcc.o"
 ".\objects\timer.o"
 ".\objects\queue.o"

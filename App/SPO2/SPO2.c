@@ -27,22 +27,21 @@
 #include "stm32f10x_conf.h"
 #include "SPO2_HeartRate_Calculate.h"
 #include "DAC.h"
+#include "SPO2_Adjust.h"
+
 /*********************************************************************************************************
 *                                              宏定义
 *********************************************************************************************************/
-#define SPO2_LEAD_ON 1
-#define SPO2_LEAD_OFF 0
 #define SPO2_START 0
 #define SPO2_STOP 1
 
-#define SPO2_LEADOFF_PIN (BitAction)GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_2)
 #define SPO2_ZERO_PIN_START  GPIO_WriteBit(GPIOC, GPIO_Pin_13, Bit_RESET);
 #define SPO2_ZERO_PIN_STOP  GPIO_WriteBit(GPIOC, GPIO_Pin_13, Bit_SET);
 
-#define SPO2_IR_OFF GPIO_WriteBit(GPIOB, GPIO_Pin_6, Bit_RESET);
-#define SPO2_IR_ON GPIO_WriteBit(GPIOB, GPIO_Pin_6, Bit_SET);
-#define SPO2_RED_OFF GPIO_WriteBit(GPIOB, GPIO_Pin_7, Bit_RESET);
-#define SPO2_RED_ON GPIO_WriteBit(GPIOB, GPIO_Pin_7, Bit_SET);
+#define SPO2_RED_OFF GPIO_WriteBit(GPIOB, GPIO_Pin_6, Bit_RESET);
+#define SPO2_RED_ON GPIO_WriteBit(GPIOB, GPIO_Pin_6, Bit_SET);
+#define SPO2_IR_OFF GPIO_WriteBit(GPIOB, GPIO_Pin_7, Bit_RESET);
+#define SPO2_IR_ON GPIO_WriteBit(GPIOB, GPIO_Pin_7, Bit_SET);
 
 #define SPO2_Task_NO 0
 #define SPO2_Task_YES 1
@@ -64,10 +63,11 @@ float SPO2_IR_WaveData[SPO2_ADC_arrMAX] = {0}; //初始化数组
 u16 WAVE_NUM = 0;         //波形数据包的点计数器
 static u8 SPO2_START_INFO = SPO2_STOP;           //上位机发来的命令（待补充）
 int SPO2_Regular_Flag = 0;//初始不进入数据处理
+
+
 /*********************************************************************************************************
 *                                              内部函数声明
 *********************************************************************************************************/
-//static u8 SPO2_LEADOFF_Check(void);              //检查导联脱落（这里引脚待补充）
 static u8 SPO2_Start_Check(void);                //检查开始测量信号Flag
 static void SPO2_ADC_Read_RED(void);          //存入单个读取的数据，返回目前数组数据量
 static void SPO2_ADC_Read_IR(void);          //存入单个读取的数据，返回目前数组数据量
@@ -79,42 +79,6 @@ void SPO2_Light_Switch(void);
 /*********************************************************************************************************
 *                                              内部函数实现
 *********************************************************************************************************/
-
-/*********************************************************************************************************
-* 函数名称: SPO2_LEADOFF_Check
-* 函数功能: 呼吸导联脱落Flag检测
-* 输入参数: void
-* 输出参数: void
-* 返 回 值: void
-* 创建日期: 2025年11月26日
-* 注    意:脱落：PA7高电平1；连接：PA7低电平0                                                          
-*********************************************************************************************************/
-//static u8 SPO2_LEADOFF_Check()
-//{
-//  static char SPO2_LEAD_ERROR_FLAG = FALSE;
-//  if(SPO2_LEADOFF_PIN==SPO2_LEAD_OFF)
-//  {
-//    if(SPO2_LEAD_ERROR_FLAG == FALSE)//更新ERROR标志并发送ERROR消息
-//    {
-//      SPO2_LEAD_ERROR_FLAG = TRUE;
-//      printf("ERROR：呼吸导联没接上哦\r\n");
-//    }
-//  }
-//  else if(SPO2_LEADOFF_PIN==SPO2_LEAD_ON)
-//  {
-//    if(SPO2_LEAD_ERROR_FLAG == TRUE)//更新ERROR标志并发送ERROR消息
-//    {
-//      SPO2_LEAD_ERROR_FLAG = FALSE;
-//      printf("INFO:导联已连接\r\n");
-//    }  
-//  }
-//  else
-//  {
-//    printf("WARNING:导联引脚状态检测异常\r\n");
-//  }
-//  return SPO2_LEAD_ERROR_FLAG;
-//}
-
 /*********************************************************************************************************
 * 函数名称: SPO2_Start_Check
 * 函数功能: 呼吸开始测量Flag检测
@@ -169,7 +133,7 @@ static void SPO2_ADC_Read_RED()
   {
     if(ReadADCBuf(&adcData))        //从缓存队列中取出1个数据
     {
-      waveData = adcData * 1.0;      //计算获取点的位置
+      waveData = adcData;      //计算获取点的位置
       SPO2_RED_WaveData[WAVE_NUM] = waveData;  //存放到数组
     }
     SPO2_TM_counter = 0;                              //准备下次的循环
@@ -197,7 +161,7 @@ static void SPO2_ADC_Read_IR()
   {
     if(ReadADCBuf(&adcData))        //从缓存队列中取出1个数据
     {
-      waveData = adcData * 1.0;      //计算获取点的位置
+      waveData = adcData;      //计算获取点的位置
       SPO2_IR_WaveData[WAVE_NUM] = waveData;  //存放到数组
     }
     SPO2_TM_counter = 0;                              //准备下次的循环
@@ -220,7 +184,7 @@ static void SPO2_Wave_Send()
 
   if(SPO2_TM_counter >= SPO2_ADC_TM)     //达到2ms
   {  
-    //printf("%f\r\n",SPO2_RED_WaveData[WAVE_NUM]);
+//    printf("%f\r\n",SPO2_RED_WaveData[WAVE_NUM]);
     printf("%f,%f\r\n",SPO2_RED_WaveData[WAVE_NUM],SPO2_IR_WaveData[WAVE_NUM]);
     SPO2_TM_counter = 0;                              //准备下次的循环
   }
@@ -278,7 +242,7 @@ static  void  ConfigSPO2GPIO(void)
 *********************************************************************************************************/
 void SPO2_Init()
 {
-  SPO2_SetDAC(150);
+  SPO2_SetDAC(220);
   ConfigSPO2GPIO();
   SPO2_START_INFO = SPO2_STOP;
   printf("{{1,脉率}}\r\n");
@@ -301,13 +265,7 @@ void SPO2_Init()
 void SPO2_Task()
 {  
   static u8 test_point = '0';
-  
-  
-//  if(SPO2_LEADOFF_Check()==TRUE)//检查导联脱落（PA7）
-//  {
-//    return;    
-//  }
-  
+    
   if(SPO2_Start_Check()==SPO2_STOP) //检查开始测量信号Flag
   {
     return;    
@@ -417,18 +375,19 @@ void SPO2_Light_Switch()
    switch(i)
   {
     case 0: 
-            SPO2_Light_Change(SPO2_RED_OFF_Flag,SPO2_IR_ON_Flag);
+            SPO2_Light_Change(SPO2_RED_ON_Flag,SPO2_IR_OFF_Flag);//修改Flag，下次读取ADC
             i++;break;
     case 1: 
-            SPO2_ADC_Read_IR();          //存入单个读取的数据，返回目前数组数据量
-            SPO2_IR_Filter(&SPO2_IR_WaveData[WAVE_NUM]);                   //滤波
+            SPO2_ADC_Read_RED();          //存入单个读取的数据，返回目前数组数据量
             SPO2_Light_Change(SPO2_RED_OFF_Flag,SPO2_IR_OFF_Flag);
             i++;break;
     case 2: 
-            SPO2_Light_Change(SPO2_RED_ON_Flag,SPO2_IR_OFF_Flag);//修改Flag，下次读取ADC
+            SPO2_Light_Change(SPO2_RED_OFF_Flag,SPO2_IR_ON_Flag);
             i++;break;
     case 3: 
-            SPO2_ADC_Read_RED();          //存入单个读取的数据，返回目前数组数据量
+            SPO2_ADC_Read_IR();          //存入单个读取的数据，返回目前数组数据量
+            SPO2_LEADOFF_Check(SPO2_RED_WaveData[WAVE_NUM],SPO2_IR_WaveData[WAVE_NUM]);
+            SPO2_IR_Filter(&SPO2_IR_WaveData[WAVE_NUM]);                   //滤波
             SPO2_RED_Filter(&SPO2_RED_WaveData[WAVE_NUM]);                   //滤波
             SPO2_Light_Change(SPO2_RED_OFF_Flag,SPO2_IR_OFF_Flag);
             SPO2_Wave_Send();                //发送数据      

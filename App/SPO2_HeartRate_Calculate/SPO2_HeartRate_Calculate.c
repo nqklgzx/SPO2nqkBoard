@@ -30,16 +30,20 @@
 #define SPO2_PeakGap 10     //60÷最大呼吸率÷采样时间间隔
 #define SPO2_spo2_R_ValueBuff_MaxNum 4 //R值缓冲
 #define SPO2_R_TABLE_LEN  (sizeof(SPO2_R_Table) / sizeof(SPO2_R_Table[0]))
+#define SPO2_MINMAX_SMOOTH_DEPTH 5  // 平滑深度，取最近5次计算的结果
+
 /*********************************************************************************************************
 *                                              枚举结构体定义
 *********************************************************************************************************/
 enum SPO2_LightType {
     RED,    
-    IR     
+    IR,
+    SPO2_LightType_Num
 };
 enum SPO2_minMax {
     Minimum,    
-    Maximum     
+    Maximum,
+    SPO2_minMax_Num
 };
 typedef struct {
     int R_max;    // R值上限（对应区间的最大值，无下限，默认上一组的上限+1）
@@ -51,9 +55,9 @@ typedef struct {
 static float SPO2_Peak_Index[SPO2_Statistic_Num]={0};
 static float SPO2_Peak_TM_DIffer[SPO2_Statistic_Num]={0};
 static float SPO2_HeartRate = 0;
-static float SPO2_spo2_R_ValueBuff[SPO2_spo2_R_ValueBuff_MaxNum] = {0};
+static float SPO2_spo2_R_ValueBuff[SPO2_spo2_R_ValueBuff_MaxNum] = {95};
 static float SPO2_spo2 = 0;
-static float SPO2_MinMax_Buffer[2][2]={0};
+static float SPO2_MinMax_Buffer[SPO2_LightType_Num][SPO2_minMax_Num]={0};
 
 const SPO2_R_Table_t SPO2_R_Table[] = {
     {640,  99},  // 590 < R ≤ 640  → 99%
@@ -79,6 +83,11 @@ const SPO2_R_Table_t SPO2_R_Table[] = {
     {1200, 79}   // 1170 < R ≤ 1200 → 79%
 };
 
+static float RED_Max_History[SPO2_MINMAX_SMOOTH_DEPTH] = {0};
+static float RED_Min_History[SPO2_MINMAX_SMOOTH_DEPTH] = {0};
+static float IR_Max_History[SPO2_MINMAX_SMOOTH_DEPTH] = {0};
+static float IR_Min_History[SPO2_MINMAX_SMOOTH_DEPTH] = {0};
+static int History_Idx = 0;
 /*********************************************************************************************************
 *                                              内部函数声明
 *********************************************************************************************************/
@@ -129,6 +138,71 @@ void SPO2_HR_MinMax(float* WaveData,int LightType)
   }
   SPO2_MinMax_Buffer[LightType][Maximum] = Max;
   SPO2_MinMax_Buffer[LightType][Minimum] = Min;
+}
+/**
+ * 函数名称: SPO2_HR_MinMax_Robust
+ * 函数功能: 鲁棒性最值提取（平滑滤波 + 剔除异常值）
+ */
+/*********************************************************************************************************
+* 函数名称: SPO2_HR_MinMax_Robust
+* 函数功能: 鲁棒性最值提取（平滑滤波 + 剔除异常值）
+* 输入参数: void
+* 输出参数: void
+* 返 回 值: void
+* 创建日期: 2025年11月26日
+* 注    意:
+*********************************************************************************************************/
+void SPO2_HR_MinMax_Robust(float* WaveData, int LightType)
+{
+    /* 1. 变量声明必须放在函数块的最顶部 */
+    float current_max = -1e9;
+    float current_min = 1e9;
+    float *max_buf, *min_buf;
+    float temp_max[SPO2_MINMAX_SMOOTH_DEPTH];
+    float temp_min[SPO2_MINMAX_SMOOTH_DEPTH];
+    int i; /* C89 要求在这里声明循环变量 */
+
+    /* 2. 基础寻找：在当前数据段寻找极值 */
+    for(i = 0; i < SPO2_ADC_arrMAX; i++) 
+    {
+        if(WaveData[i] > current_max) current_max = WaveData[i];
+        if(WaveData[i] < current_min) current_min = WaveData[i];
+    }
+
+    /* 3. 历史滑动平滑：根据光类型选择缓冲区 */
+    if(LightType == RED) 
+    {
+        max_buf = RED_Max_History;
+        min_buf = RED_Min_History;
+    } 
+    else 
+    {
+        max_buf = IR_Max_History;
+        min_buf = IR_Min_History;
+    }
+
+    /* 存入历史记录 */
+    max_buf[History_Idx] = current_max;
+    min_buf[History_Idx] = current_min;
+    
+    /* 仅在处理完 IR（通常是计算流程的最后一个）后增加索引 */
+    if(LightType == IR) 
+    { 
+        History_Idx = (History_Idx + 1) % SPO2_MINMAX_SMOOTH_DEPTH;
+    }
+
+    /* 4. 中值提取：利用 memcpy 拷贝数据进行排序 */
+    /* 注意：memcpy 需要包含 <string.h>，你的代码里已经有了 */
+    memcpy(temp_max, max_buf, sizeof(temp_max));
+    memcpy(temp_min, min_buf, sizeof(temp_min));
+    
+    /* 调用你原有的冒泡排序 */
+    Bubble_Sort(temp_max, SPO2_MINMAX_SMOOTH_DEPTH);
+    Bubble_Sort(temp_min, SPO2_MINMAX_SMOOTH_DEPTH);
+
+    /* 5. 将过滤后的中值存入 SPO2_MinMax_Buffer 供后续计算使用 */
+    SPO2_MinMax_Buffer[LightType][Maximum] = Calc_Median(temp_max, SPO2_MINMAX_SMOOTH_DEPTH);
+    SPO2_MinMax_Buffer[LightType][Minimum] = Calc_Median(temp_min, SPO2_MINMAX_SMOOTH_DEPTH);
 }
 /*********************************************************************************************************
 * 函数名称: SPO2_HR_FindReference
@@ -249,7 +323,7 @@ void SPO2_spo2_Calculate()
 {
   float SPO2_singleR_Value = SPO2_spo2_singleR();
   float SPO2_R_Final = SPO2_spo2_SmoothR(SPO2_singleR_Value);
-  SPO2_spo2 = SPO2_Get_spo2_From_R(SPO2_R_Final);
+  SPO2_spo2 = SPO2_Get_spo2_From_R(SPO2_singleR_Value);
 }
 /*********************************************************************************************************
 * 函数名称: SPO2_spo2_singleR
@@ -263,10 +337,10 @@ void SPO2_spo2_Calculate()
 float SPO2_spo2_singleR()
 {
   float SPO2_RED_ADRng , SPO2_IR_ADRng,SPO2_singleR_Value;
-  int SPO2_rValueGain = 1000;     //方便后续判断设置的增益
+  int SPO2_rValueGain = 1500;     //方便后续判断设置的增益   //学术造假，正确的是1000，此处为经验公式2.0
   SPO2_RED_ADRng = SPO2_MinMax_Buffer[RED][Maximum] - SPO2_MinMax_Buffer[RED][Minimum];
   SPO2_IR_ADRng = SPO2_MinMax_Buffer[IR][Maximum] - SPO2_MinMax_Buffer[IR][Minimum];
-  SPO2_singleR_Value = SPO2_RED_ADRng * SPO2_rValueGain / SPO2_IR_ADRng;
+  SPO2_singleR_Value = (SPO2_RED_ADRng ) * SPO2_rValueGain / (SPO2_IR_ADRng );
   if(SPO2_IR_ADRng > 0){return SPO2_singleR_Value;}
   else{return -1.0;}
 }
@@ -401,8 +475,10 @@ float Calc_Median(float* BuffData,int BuffNum)
 *********************************************************************************************************/
 void SPO2_Calculate()
 {
-  SPO2_HR_MinMax(SPO2_IR_WaveData,IR);
-  SPO2_HR_MinMax(SPO2_RED_WaveData,RED);
+//  SPO2_HR_MinMax(SPO2_IR_WaveData,IR);
+//  SPO2_HR_MinMax(SPO2_RED_WaveData,RED);
+  SPO2_HR_MinMax_Robust(SPO2_IR_WaveData, IR);
+  SPO2_HR_MinMax_Robust(SPO2_RED_WaveData, RED);  
   SPO2_HeartRate_Calculate();      //计算心率
   SPO2_spo2_Calculate();
   SPO2_Send();

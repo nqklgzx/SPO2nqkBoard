@@ -117,7 +117,7 @@ static  void  Proc2msTask(void)
     }
     SPO2_Task();
        
-    LEDFlicker(250);//调用闪烁函数     
+    LEDFlicker(150);//调用闪烁函数     
     ScanKeyTask();
     Clr2msFlag();   //清除2ms标志
   }
