@@ -1,6 +1,6 @@
 Dependencies for Project 'STM32KeilPrj', Target 'Target 1': (DO NOT MODIFY !)
 CompilerVersion: 5060960::V5.06 update 7 (build 960)::.\ARMCC
-F (..\App\Main\Main.c)(0x697DBC5C)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\App\Main -I ..\App\DataType -I ..\HW\RCC -I ..\HW\Timer -I ..\HW\UART1 -I ..\FW\inc -I ..\ARM\NVIC -I ..\ARM\SysTick -I ..\ARM\System -I ..\App\LED -I ..\APP\PackUnpack -I ..\APP\ProcHostCmd -I ..\HW\DAC -I ..\HW\ADC -I ..\App\SendDataToHost -I ..\App\SPO2_HeartRate_Calculate -I ..\App\Filter -I ..\App\SPO2 -I ..\ARM\DSPlib\Include -I ..\App\KeyOne -I ..\App\SPO2_Adjust-IC:\Users\NQK\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="536" -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DARM_MATH_CM3-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
+F (..\App\Main\Main.c)(0x69809612)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\App\Main -I ..\App\DataType -I ..\HW\RCC -I ..\HW\Timer -I ..\HW\UART1 -I ..\FW\inc -I ..\ARM\NVIC -I ..\ARM\SysTick -I ..\ARM\System -I ..\App\LED -I ..\APP\PackUnpack -I ..\APP\ProcHostCmd -I ..\HW\DAC -I ..\HW\ADC -I ..\App\SendDataToHost -I ..\App\SPO2_HeartRate_Calculate -I ..\App\Filter -I ..\App\SPO2 -I ..\ARM\DSPlib\Include -I ..\App\KeyOne -I ..\App\SPO2_Adjust-IC:\Users\NQK\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="536" -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DARM_MATH_CM3-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
 I (..\App\Main\Main.h)(0x5CE34F0B)
 I (..\ARM\System\stm32f10x_conf.h)(0x697882B2)
 I (..\FW\inc\stm32f10x_adc.h)(0x69788360)
@@ -31,7 +31,7 @@ I (..\App\KeyOne\KeyOne.h)(0x692EC2F3)
 I (..\App\KeyOne\ProcKeyOne.h)(0x697887B0)
 I (..\HW\DAC\DAC.h)(0x6974472A)
 I (..\HW\ADC\ADC.h)(0x697D91C3)
-I (..\App\SPO2\SPO2.h)(0x697DA9E7)
+I (..\App\SPO2\SPO2.h)(0x69817D41)
 I (..\App\Filter\Filter.h)(0x6979EE22)
 I (..\App\SPO2_HeartRate_Calculate\SPO2_HeartRate_Calculate.h)(0x697AD76A)
 F (..\App\KeyOne\KeyOne.c)(0x692EC250)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\App\Main -I ..\App\DataType -I ..\HW\RCC -I ..\HW\Timer -I ..\HW\UART1 -I ..\FW\inc -I ..\ARM\NVIC -I ..\ARM\SysTick -I ..\ARM\System -I ..\App\LED -I ..\APP\PackUnpack -I ..\APP\ProcHostCmd -I ..\HW\DAC -I ..\HW\ADC -I ..\App\SendDataToHost -I ..\App\SPO2_HeartRate_Calculate -I ..\App\Filter -I ..\App\SPO2 -I ..\ARM\DSPlib\Include -I ..\App\KeyOne -I ..\App\SPO2_Adjust-IC:\Users\NQK\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="536" -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DARM_MATH_CM3-o .\objects\keyone.o --omf_browse .\objects\keyone.crf --depend .\objects\keyone.d)
@@ -75,7 +75,7 @@ I (..\FW\inc\stm32f10x_rcc.h)(0x69788360)
 I (..\FW\inc\stm32f10x_tim.h)(0x69788360)
 I (..\FW\inc\stm32f10x_usart.h)(0x69788360)
 I (..\FW\inc\misc.h)(0x69788360)
-F (..\App\Filter\Filter.c)(0x69802919)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\App\Main -I ..\App\DataType -I ..\HW\RCC -I ..\HW\Timer -I ..\HW\UART1 -I ..\FW\inc -I ..\ARM\NVIC -I ..\ARM\SysTick -I ..\ARM\System -I ..\App\LED -I ..\APP\PackUnpack -I ..\APP\ProcHostCmd -I ..\HW\DAC -I ..\HW\ADC -I ..\App\SendDataToHost -I ..\App\SPO2_HeartRate_Calculate -I ..\App\Filter -I ..\App\SPO2 -I ..\ARM\DSPlib\Include -I ..\App\KeyOne -I ..\App\SPO2_Adjust-IC:\Users\NQK\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="536" -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DARM_MATH_CM3-o .\objects\filter.o --omf_browse .\objects\filter.crf --depend .\objects\filter.d)
+F (..\App\Filter\Filter.c)(0x698078D3)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\App\Main -I ..\App\DataType -I ..\HW\RCC -I ..\HW\Timer -I ..\HW\UART1 -I ..\FW\inc -I ..\ARM\NVIC -I ..\ARM\SysTick -I ..\ARM\System -I ..\App\LED -I ..\APP\PackUnpack -I ..\APP\ProcHostCmd -I ..\HW\DAC -I ..\HW\ADC -I ..\App\SendDataToHost -I ..\App\SPO2_HeartRate_Calculate -I ..\App\Filter -I ..\App\SPO2 -I ..\ARM\DSPlib\Include -I ..\App\KeyOne -I ..\App\SPO2_Adjust-IC:\Users\NQK\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="536" -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DARM_MATH_CM3-o .\objects\filter.o --omf_browse .\objects\filter.crf --depend .\objects\filter.d)
 I (..\App\Filter\Filter.h)(0x6979EE22)
 I (..\App\DataType\DataType.h)(0x5CE34DC6)
 I (..\HW\UART1\UART1.h)(0x5CE2B64F)
@@ -94,10 +94,10 @@ I (..\App\DataType\DataType.h)(0x5CE34DC6)
 I (..\HW\UART1\UART1.h)(0x5CE2B64F)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x697882CA)
 I (..\App\Filter\Filter.h)(0x6979EE22)
-I (..\App\SPO2\SPO2.h)(0x697DA9E7)
+I (..\App\SPO2\SPO2.h)(0x69817D41)
 I (..\App\SPO2_HeartRate_Calculate\SPO2_HeartRate_Calculate.h)(0x697AD76A)
-F (..\App\SPO2\SPO2.c)(0x69806385)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\App\Main -I ..\App\DataType -I ..\HW\RCC -I ..\HW\Timer -I ..\HW\UART1 -I ..\FW\inc -I ..\ARM\NVIC -I ..\ARM\SysTick -I ..\ARM\System -I ..\App\LED -I ..\APP\PackUnpack -I ..\APP\ProcHostCmd -I ..\HW\DAC -I ..\HW\ADC -I ..\App\SendDataToHost -I ..\App\SPO2_HeartRate_Calculate -I ..\App\Filter -I ..\App\SPO2 -I ..\ARM\DSPlib\Include -I ..\App\KeyOne -I ..\App\SPO2_Adjust-IC:\Users\NQK\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="536" -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DARM_MATH_CM3-o .\objects\spo2.o --omf_browse .\objects\spo2.crf --depend .\objects\spo2.d)
-I (..\App\SPO2\SPO2.h)(0x697DA9E7)
+F (..\App\SPO2\SPO2.c)(0x69818EAE)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\App\Main -I ..\App\DataType -I ..\HW\RCC -I ..\HW\Timer -I ..\HW\UART1 -I ..\FW\inc -I ..\ARM\NVIC -I ..\ARM\SysTick -I ..\ARM\System -I ..\App\LED -I ..\APP\PackUnpack -I ..\APP\ProcHostCmd -I ..\HW\DAC -I ..\HW\ADC -I ..\App\SendDataToHost -I ..\App\SPO2_HeartRate_Calculate -I ..\App\Filter -I ..\App\SPO2 -I ..\ARM\DSPlib\Include -I ..\App\KeyOne -I ..\App\SPO2_Adjust-IC:\Users\NQK\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="536" -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DARM_MATH_CM3-o .\objects\spo2.o --omf_browse .\objects\spo2.crf --depend .\objects\spo2.d)
+I (..\App\SPO2\SPO2.h)(0x69817D41)
 I (..\App\DataType\DataType.h)(0x5CE34DC6)
 I (..\HW\ADC\ADC.h)(0x697D91C3)
 I (..\HW\UART1\UART1.h)(0x5CE2B64F)
@@ -125,20 +125,21 @@ I (..\FW\inc\stm32f10x_usart.h)(0x69788360)
 I (..\FW\inc\misc.h)(0x69788360)
 I (..\App\SPO2_HeartRate_Calculate\SPO2_HeartRate_Calculate.h)(0x697AD76A)
 I (..\HW\DAC\DAC.h)(0x6974472A)
-I (..\App\SPO2_Adjust\SPO2_Adjust.h)(0x697C4199)
-F (..\App\SPO2_HeartRate_Calculate\SPO2_HeartRate_Calculate.c)(0x6980640D)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\App\Main -I ..\App\DataType -I ..\HW\RCC -I ..\HW\Timer -I ..\HW\UART1 -I ..\FW\inc -I ..\ARM\NVIC -I ..\ARM\SysTick -I ..\ARM\System -I ..\App\LED -I ..\APP\PackUnpack -I ..\APP\ProcHostCmd -I ..\HW\DAC -I ..\HW\ADC -I ..\App\SendDataToHost -I ..\App\SPO2_HeartRate_Calculate -I ..\App\Filter -I ..\App\SPO2 -I ..\ARM\DSPlib\Include -I ..\App\KeyOne -I ..\App\SPO2_Adjust-IC:\Users\NQK\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="536" -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DARM_MATH_CM3-o .\objects\spo2_heartrate_calculate.o --omf_browse .\objects\spo2_heartrate_calculate.crf --depend .\objects\spo2_heartrate_calculate.d)
+I (..\App\SPO2_Adjust\SPO2_Adjust.h)(0x698186FF)
+F (..\App\SPO2_HeartRate_Calculate\SPO2_HeartRate_Calculate.c)(0x69817D41)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\App\Main -I ..\App\DataType -I ..\HW\RCC -I ..\HW\Timer -I ..\HW\UART1 -I ..\FW\inc -I ..\ARM\NVIC -I ..\ARM\SysTick -I ..\ARM\System -I ..\App\LED -I ..\APP\PackUnpack -I ..\APP\ProcHostCmd -I ..\HW\DAC -I ..\HW\ADC -I ..\App\SendDataToHost -I ..\App\SPO2_HeartRate_Calculate -I ..\App\Filter -I ..\App\SPO2 -I ..\ARM\DSPlib\Include -I ..\App\KeyOne -I ..\App\SPO2_Adjust-IC:\Users\NQK\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="536" -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DARM_MATH_CM3-o .\objects\spo2_heartrate_calculate.o --omf_browse .\objects\spo2_heartrate_calculate.crf --depend .\objects\spo2_heartrate_calculate.d)
 I (..\App\SPO2_HeartRate_Calculate\SPO2_HeartRate_Calculate.h)(0x697AD76A)
-I (..\App\SPO2\SPO2.h)(0x697DA9E7)
+I (..\App\SPO2\SPO2.h)(0x69817D41)
 I (..\App\DataType\DataType.h)(0x5CE34DC6)
 I (..\HW\UART1\UART1.h)(0x5CE2B64F)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x697882CA)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x697882B2)
-F (..\App\SPO2_Adjust\SPO2_Adjust.c)(0x697DC093)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\App\Main -I ..\App\DataType -I ..\HW\RCC -I ..\HW\Timer -I ..\HW\UART1 -I ..\FW\inc -I ..\ARM\NVIC -I ..\ARM\SysTick -I ..\ARM\System -I ..\App\LED -I ..\APP\PackUnpack -I ..\APP\ProcHostCmd -I ..\HW\DAC -I ..\HW\ADC -I ..\App\SendDataToHost -I ..\App\SPO2_HeartRate_Calculate -I ..\App\Filter -I ..\App\SPO2 -I ..\ARM\DSPlib\Include -I ..\App\KeyOne -I ..\App\SPO2_Adjust-IC:\Users\NQK\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="536" -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DARM_MATH_CM3-o .\objects\spo2_adjust.o --omf_browse .\objects\spo2_adjust.crf --depend .\objects\spo2_adjust.d)
-I (..\App\SPO2_Adjust\SPO2_Adjust.h)(0x697C4199)
-I (..\App\SPO2\SPO2.h)(0x697DA9E7)
+F (..\App\SPO2_Adjust\SPO2_Adjust.c)(0x698198E6)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\App\Main -I ..\App\DataType -I ..\HW\RCC -I ..\HW\Timer -I ..\HW\UART1 -I ..\FW\inc -I ..\ARM\NVIC -I ..\ARM\SysTick -I ..\ARM\System -I ..\App\LED -I ..\APP\PackUnpack -I ..\APP\ProcHostCmd -I ..\HW\DAC -I ..\HW\ADC -I ..\App\SendDataToHost -I ..\App\SPO2_HeartRate_Calculate -I ..\App\Filter -I ..\App\SPO2 -I ..\ARM\DSPlib\Include -I ..\App\KeyOne -I ..\App\SPO2_Adjust-IC:\Users\NQK\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="536" -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DARM_MATH_CM3-o .\objects\spo2_adjust.o --omf_browse .\objects\spo2_adjust.crf --depend .\objects\spo2_adjust.d)
+I (..\App\SPO2_Adjust\SPO2_Adjust.h)(0x698186FF)
+I (..\App\SPO2\SPO2.h)(0x69817D41)
 I (..\App\DataType\DataType.h)(0x5CE34DC6)
 I (..\HW\UART1\UART1.h)(0x5CE2B64F)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x697882CA)
+I (..\HW\DAC\DAC.h)(0x6974472A)
 F (..\HW\RCC\RCC.c)(0x5CE35BAB)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\App\Main -I ..\App\DataType -I ..\HW\RCC -I ..\HW\Timer -I ..\HW\UART1 -I ..\FW\inc -I ..\ARM\NVIC -I ..\ARM\SysTick -I ..\ARM\System -I ..\App\LED -I ..\APP\PackUnpack -I ..\APP\ProcHostCmd -I ..\HW\DAC -I ..\HW\ADC -I ..\App\SendDataToHost -I ..\App\SPO2_HeartRate_Calculate -I ..\App\Filter -I ..\App\SPO2 -I ..\ARM\DSPlib\Include -I ..\App\KeyOne -I ..\App\SPO2_Adjust-IC:\Users\NQK\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="536" -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DARM_MATH_CM3-o .\objects\rcc.o --omf_browse .\objects\rcc.crf --depend .\objects\rcc.d)
 I (..\HW\RCC\RCC.h)(0x5CE35B2E)
 I (..\App\DataType\DataType.h)(0x5CE34DC6)

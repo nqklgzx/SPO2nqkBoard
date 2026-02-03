@@ -37,6 +37,7 @@
 *********************************************************************************************************/
 //函数声明
 void SPO2_LEADOFF_Check(float REDWaveData ,float IRWaveData);     //检查导联脱落
+void SPO2_DAC_Adjust(float REDWaveData ,float IRWaveData);
 
 
 

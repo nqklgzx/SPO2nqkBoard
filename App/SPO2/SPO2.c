@@ -63,7 +63,7 @@ float SPO2_IR_WaveData[SPO2_ADC_arrMAX] = {0}; //初始化数组
 u16 WAVE_NUM = 0;         //波形数据包的点计数器
 static u8 SPO2_START_INFO = SPO2_STOP;           //上位机发来的命令（待补充）
 int SPO2_Regular_Flag = 0;//初始不进入数据处理
-
+int SPO2_DAC_Value = 0;
 
 /*********************************************************************************************************
 *                                              内部函数声明
@@ -242,7 +242,8 @@ static  void  ConfigSPO2GPIO(void)
 *********************************************************************************************************/
 void SPO2_Init()
 {
-  SPO2_SetDAC(220);
+  SPO2_DAC_Value = 20;
+  SPO2_SetDAC(SPO2_DAC_Value);
   ConfigSPO2GPIO();
   SPO2_START_INFO = SPO2_STOP;
   printf("{{1,脉率}}\r\n");
@@ -387,6 +388,7 @@ void SPO2_Light_Switch()
     case 3: 
             SPO2_ADC_Read_IR();          //存入单个读取的数据，返回目前数组数据量
             SPO2_LEADOFF_Check(SPO2_RED_WaveData[WAVE_NUM],SPO2_IR_WaveData[WAVE_NUM]);
+            SPO2_DAC_Adjust(SPO2_RED_WaveData[WAVE_NUM],SPO2_IR_WaveData[WAVE_NUM]);
             SPO2_IR_Filter(&SPO2_IR_WaveData[WAVE_NUM]);                   //滤波
             SPO2_RED_Filter(&SPO2_RED_WaveData[WAVE_NUM]);                   //滤波
             SPO2_Light_Change(SPO2_RED_OFF_Flag,SPO2_IR_OFF_Flag);
