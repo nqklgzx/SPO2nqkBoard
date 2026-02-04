@@ -457,8 +457,8 @@ void SPO2_Send()
 
 {
   //printf("INFO:SPO2_HeartRate:%lf",SPO2_HeartRate);
-  printf("[[1,%f]]\r\n",SPO2_HeartRate*0.84); //设置脉率测量结果显示    //0.83为学术造假（经验公式）
-  printf("[[2,%f]]\r\n",SPO2_spo2); //设置血氧测量结果显示
+  printf("[[1,%.0f]]\r\n",SPO2_HeartRate*0.84); //设置脉率测量结果显示    //0.83为学术造假（经验公式）
+  printf("[[2,%.0f]]\r\n",SPO2_spo2); //设置血氧测量结果显示
 }
 
 

@@ -62,12 +62,12 @@ static void ConfigADC1(void)
   //使能RCC相关时钟
   RCC_ADCCLKConfig(RCC_PCLK2_Div6); //设置ADC时钟分频，ADCCLK=PCLK2/6=12MHz
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1  , ENABLE);  //使能ADC1的时钟
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC , ENABLE);  //使能GPIOC的时钟
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA , ENABLE);  //使能GPIOC的时钟
  
   //配置ADC1的GPIO
   GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_5;    //设置引脚
   GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AIN; //设置输入类型
-  GPIO_Init(GPIOC, &GPIO_InitStructure);  //根据参数初始化GPIO
+  GPIO_Init(GPIOA, &GPIO_InitStructure);  //根据参数初始化GPIO
 
   //配置ADC1
   ADC_InitStructure.ADC_Mode               = ADC_Mode_Independent;  //设置为独立模式
@@ -78,7 +78,7 @@ static void ConfigADC1(void)
   ADC_InitStructure.ADC_NbrOfChannel       = 1; //设置ADC的通道数目
   ADC_Init(ADC1, &ADC_InitStructure);
 
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_15, 1, ADC_SampleTime_239Cycles5); //设置采样时间为239.5个周期
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 1, ADC_SampleTime_239Cycles5); //设置采样时间为239.5个周期
 
   ADC_DMACmd(ADC1, ENABLE);                   //使能ADC1的DMA
   ADC_ExternalTrigConvCmd(ADC1, ENABLE);      //使用外部事件启动ADC转换

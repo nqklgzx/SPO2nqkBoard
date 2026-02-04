@@ -273,7 +273,7 @@ void SPO2_Adj_SendERROR()
 *********************************************************************************************************/
 void SPO2_RoughAdj()
 {
-  if(SPO2_Finger_Flag != SPO2_LEAD_ON) 
+  if(SPO2_Probe_Flag != SPO2_LEAD_ON||SPO2_Finger_Flag != SPO2_LEAD_ON) 
   {  
     return;
   }
