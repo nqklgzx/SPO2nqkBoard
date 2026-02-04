@@ -25,9 +25,6 @@
 /*********************************************************************************************************
 *                                              ºê¶¨Òå
 *********************************************************************************************************/
-#define SPO2_LEAD_ON 1
-#define SPO2_LEAD_OFF 0
-
 #define SPO2_RED_FingeOff_MAX 100  //Ð¡ÓÚÓÚÕâ¸öÖµ¾ÍÊÇÊÖÖ¸ÍÑÂä£¨ÂË²¨Ç°£©
 #define SPO2_IR_FingeOff_MAX 100  //Ð¡ÓÚÓÚÕâ¸öÖµ¾ÍÊÇÊÖÖ¸ÍÑÂä£¨ÂË²¨Ç°£©
 #define SPO2_RED_ProbeOff_Min 2000  //´óÓÚÕâ¸öÖµ¾ÍÊÇµ¼ÁªÍÑÂä£¨ÂË²¨Ç°£©
@@ -37,18 +34,14 @@
 
 #define SPO2_Sliding_WINDOW_SIZE 50    //»¬¶¯Æ½¾ù´°¿ÚÖµ
 
-#define SPO2_RoughAdj_Stable 1
-#define SPO2_RoughAdj_UnStable 0
-#define SPO2_FineAdj_Stable 1
-#define SPO2_FineAdj_UnStable 0
-
 #define SPO2_RoughAdj_Stable_MAXCnt 3
 #define SPO2_RoughAdj_Delay_MaxCnt 30
-#define SPO2_RoughAdj_Step 2
+#define SPO2_FineAdj_Delay_MaxCnt 30
+#define SPO2_RoughAdj_Step 5
 #define SPO2_FineAdj_Step 1
 
-#define SPO2_IR_CENTRAL_LINE 1500
-#define SPO2_RED_CENTRAL_LINE 1650
+#define SPO2_IR_CENTRAL_LINE 1350
+#define SPO2_RED_CENTRAL_LINE 1500
 #define SPO2_Fine_Adj_Offset 150
 
 #define SPO2_DA_MAX 300
@@ -67,10 +60,13 @@ float SPO2_Sliding_Buffer[SPO2_LightType_Num][SPO2_Sliding_WINDOW_SIZE] ;    //»
 int SPO2_Sliding_Index[SPO2_LightType_Num] ;//»¬¶¯Æ½¾ù
 float SPO2_Sliding_Sum[SPO2_LightType_Num] ;//»¬¶¯Æ½¾ù
 float SPO2_Sliding_Avg[SPO2_LightType_Num] ;//»¬¶¯Æ½¾ù
-int SPO2_RoughAdj_Stable_Flag = SPO2_RoughAdj_Stable;
+int SPO2_RoughAdj_Stable_Flag = SPO2_FineAdj_Init;
 int SPO2_RoughAdj_Stable_Cnt = 0;
 int SPO2_RoughAdj_Delay_Cnt = 0;
-int SPO2_FineAdj_Stable_Flag = SPO2_FineAdj_Stable;
+int SPO2_FineAdj_Delay_Cnt = 0;
+int SPO2_FineAdj_Stable_Flag = SPO2_FineAdj_Init;
+u8 SPO2_Adj_ERRORchange_Flag = FALSE;
+
 /*********************************************************************************************************
 *                                              ÄÚ²¿º¯ÊýÉùÃ÷
 *********************************************************************************************************/
@@ -79,6 +75,7 @@ void SPO2_FingerOFF_Check(float REDWaveData ,float IRWaveData);
 void SPO2_LEAD_SendERROR(void);
 void SPO2_ResetAdj(void);
 void SPO2_RoughAdj(void);
+void SPO2_Adj_SendERROR(void);
 
 /*********************************************************************************************************
 *                                              ÄÚ²¿º¯ÊýÊµÏÖ
@@ -201,30 +198,70 @@ void SPO2_LEAD_SendERROR()
   {
     if(SPO2_Probe_Flag == SPO2_LEAD_OFF)
     {
-      printf("[[5,%s]]\r\n","PbOff"); //ÉèÖÃÑªÑõERRORÏÔÊ¾
+      printf("[[5,%s]]\r\n","µ¼ÁªÍÑÂä"); //ÉèÖÃÑªÑõERRORÏÔÊ¾
     }
     else if(SPO2_Probe_Flag == SPO2_LEAD_ON)
     {
       if(SPO2_Finger_Flag == SPO2_LEAD_OFF)
       {
-        printf("[[5,%s]]\r\n","FingerOff"); //ÉèÖÃÑªÑõERRORÏÔÊ¾
+        printf("[[5,%s]]\r\n","ÊÖÖ¸ÍÑÂä"); //ÉèÖÃÑªÑõERRORÏÔÊ¾
       }
       else if(SPO2_Finger_Flag == SPO2_LEAD_ON)
       {
-        printf("[[5,%s]]\r\n","FingerON"); //ÉèÖÃÑªÑõERRORÏÔÊ¾
+        printf("[[5,%s]]\r\n","ÊÖÖ¸Á¬½Ó"); //ÉèÖÃÑªÑõERRORÏÔÊ¾
       }
       else
       {
-        printf("[[5,%s]]\r\n","FinUnkn"); //ÉèÖÃÑªÑõERRORÏÔÊ¾
+        printf("[[5,%s]]\r\n","ÊÖÖ¸Òì³£"); //ÉèÖÃÑªÑõERRORÏÔÊ¾
       }
     }
     else
     {
-      printf("[[5,%s]]\r\n","PbUnknown"); //ÉèÖÃÑªÑõERRORÏÔÊ¾
+      printf("[[5,%s]]\r\n","µ¼ÁªÒì³£"); //ÉèÖÃÑªÑõERRORÏÔÊ¾
     }
     SPO2_LEAD_ERRORchange_Flag = FALSE;
   }
 }
+/*********************************************************************************************************
+* º¯ÊýÃû³Æ: SPO2_LEAD_SendERROR
+* º¯Êý¹¦ÄÜ: 
+* ÊäÈë²ÎÊý: void
+* Êä³ö²ÎÊý: void
+* ·µ »Ø Öµ: void
+* ´´½¨ÈÕÆÚ: 2025Äê11ÔÂ26ÈÕ
+* ×¢    Òâ:
+*********************************************************************************************************/
+void SPO2_Adj_SendERROR()
+{
+  if(SPO2_Adj_ERRORchange_Flag == TRUE)
+  {
+    if(SPO2_RoughAdj_Stable_Flag == SPO2_RoughAdj_UnStable)
+    {
+      printf("[[4,%s]]\r\n","ÕýÔÚ´Öµ÷"); 
+    }
+    else if(SPO2_RoughAdj_Stable_Flag == SPO2_RoughAdj_Stable)
+    {
+      if(SPO2_FineAdj_Stable_Flag == SPO2_FineAdj_UnStable)
+      {
+        printf("[[4,%s]]\r\n","ÕýÔÚÏ¸µ÷"); 
+      }
+      else if(SPO2_FineAdj_Stable_Flag == SPO2_FineAdj_Stable)
+      {
+        printf("[[4,%s]]\r\n","Ï¸µ÷Íê±Ï"); 
+      }
+      else
+      {
+        printf("[[4,%s]]\r\n","Ï¸µ÷³õÊ¼/Òì³£"); 
+      }
+    }
+    else
+    {
+      printf("[[4,%s]]\r\n","´Öµ÷³õÊ¼/Òì³£"); 
+    }
+    SPO2_Adj_ERRORchange_Flag = FALSE;
+  }
+}
+
 /*********************************************************************************************************
 * º¯ÊýÃû³Æ: 
 * º¯Êý¹¦ÄÜ: 
@@ -247,20 +284,20 @@ void SPO2_RoughAdj()
     if(SPO2_RoughAdj_Stable_Cnt>=SPO2_RoughAdj_Stable_MAXCnt)
     {
       SPO2_RoughAdj_Stable_Cnt = 0;
-      if(SPO2_RoughAdj_Stable_Flag == SPO2_RoughAdj_UnStable)
+      if(SPO2_RoughAdj_Stable_Flag != SPO2_RoughAdj_Stable)
       {
         SPO2_RoughAdj_Stable_Flag = SPO2_RoughAdj_Stable;
-        printf("[[4,%s]]\r\n","´Öµ÷Íê±Ï"); 
+        SPO2_Adj_ERRORchange_Flag = TRUE;
       }
     }
   }
   else
   {
     SPO2_RoughAdj_Stable_Cnt = 0;
-    if(SPO2_RoughAdj_Stable_Flag == SPO2_RoughAdj_Stable)
+    if(SPO2_RoughAdj_Stable_Flag != SPO2_RoughAdj_UnStable)
     {
       SPO2_RoughAdj_Stable_Flag = SPO2_RoughAdj_UnStable;
-      printf("[[4,%s]]\r\n","ÕýÔÚ´Öµ÷"); 
+      SPO2_Adj_ERRORchange_Flag = TRUE;
     }
   }
   
@@ -270,7 +307,7 @@ void SPO2_RoughAdj()
     if(SPO2_RoughAdj_Delay_Cnt >= SPO2_RoughAdj_Delay_MaxCnt)
     {
       SPO2_RoughAdj_Delay_Cnt = 0;
-      if(SPO2_DAC_Value < SPO2_DA_MAX)
+      if(SPO2_DAC_Value <= SPO2_DA_MAX-SPO2_RoughAdj_Step)
       {
         SPO2_DAC_Value += SPO2_RoughAdj_Step;
       }
@@ -298,27 +335,51 @@ void SPO2_FineAdj()
   }
   if(SPO2_Sliding_Avg[IR] <= (SPO2_IR_CENTRAL_LINE - SPO2_Fine_Adj_Offset) || SPO2_Sliding_Avg[RED] <= (SPO2_IR_CENTRAL_LINE - SPO2_Fine_Adj_Offset))
   {
-    SPO2_DAC_Value -= SPO2_FineAdj_Step;
-    if(SPO2_FineAdj_Stable_Flag == SPO2_FineAdj_Stable)
+    if(SPO2_FineAdj_Stable_Flag != SPO2_FineAdj_UnStable)
     {
       SPO2_FineAdj_Stable_Flag = SPO2_FineAdj_UnStable;
-      printf("[[4,%s]]\r\n","ÕýÔÚÏ¸µ÷"); 
+      SPO2_Adj_ERRORchange_Flag = TRUE;
+    }
+    SPO2_FineAdj_Delay_Cnt++;
+    if(SPO2_RoughAdj_Delay_Cnt >= SPO2_FineAdj_Delay_MaxCnt)
+    {
+      SPO2_FineAdj_Delay_Cnt = 0;
+      if(SPO2_DAC_Value >= SPO2_DA_MIN+SPO2_FineAdj_Step)
+      {
+        SPO2_DAC_Value -= SPO2_FineAdj_Step;
+      }
+      else
+      {
+        SPO2_ResetAdj();
+      }
     }
   }
   else if(SPO2_Sliding_Avg[IR] >= (SPO2_IR_CENTRAL_LINE + SPO2_Fine_Adj_Offset) || SPO2_Sliding_Avg[RED] >= (SPO2_IR_CENTRAL_LINE + SPO2_Fine_Adj_Offset))
   {
-    SPO2_DAC_Value += SPO2_FineAdj_Step;
-    if(SPO2_FineAdj_Stable_Flag == SPO2_FineAdj_Stable)
+    if(SPO2_FineAdj_Stable_Flag != SPO2_FineAdj_UnStable)
     {
       SPO2_FineAdj_Stable_Flag = SPO2_FineAdj_UnStable;
+      SPO2_Adj_ERRORchange_Flag = TRUE;
+    }
+    if(SPO2_RoughAdj_Delay_Cnt >= SPO2_FineAdj_Delay_MaxCnt)
+    {
+      SPO2_FineAdj_Delay_Cnt = 0;
+      if(SPO2_DAC_Value <= SPO2_DA_MAX-SPO2_FineAdj_Step)
+      {
+        SPO2_DAC_Value += SPO2_FineAdj_Step;
+      }
+      else
+      {
+        SPO2_ResetAdj();
+      }
     }
   }
   else
   {
-    if(SPO2_FineAdj_Stable_Flag == SPO2_FineAdj_UnStable)
+    if(SPO2_FineAdj_Stable_Flag != SPO2_FineAdj_Stable)
     {
       SPO2_FineAdj_Stable_Flag = SPO2_FineAdj_Stable;
-      printf("[[4,%s]]\r\n","Ï¸µ÷Íê±Ï"); 
+      SPO2_Adj_ERRORchange_Flag = TRUE;
     }
   }
 }
@@ -333,11 +394,11 @@ void SPO2_FineAdj()
 *********************************************************************************************************/
 void SPO2_ResetAdj()
 {
-  printf("[[4,%s]]\r\n","ÖØÐÂµ÷¹â"); 
-  SPO2_DAC_Value = 220;
-  SPO2_RoughAdj_Stable_Flag = SPO2_RoughAdj_Stable;
+//  printf("[[4,%s]]\r\n","ÖØÐÂµ÷¹â"); 
+  SPO2_DAC_Value = 20;
+  SPO2_RoughAdj_Stable_Flag = SPO2_FineAdj_Init;
   SPO2_RoughAdj_Stable_Cnt = 0;
-  SPO2_FineAdj_Stable_Flag = SPO2_FineAdj_Stable;
+  SPO2_FineAdj_Stable_Flag = SPO2_FineAdj_Init;
   SPO2_RoughAdj_Delay_Cnt = 0;
 }
 /*********************************************************************************************************
@@ -393,6 +454,8 @@ void SPO2_DAC_Adjust(float REDWaveData ,float IRWaveData)
   SPO2_Sliding_Avg[IR] = Sliding_Avg_Cal(IRWaveData,IR);
   SPO2_Sliding_Avg[RED] = Sliding_Avg_Cal(REDWaveData,RED);
   SPO2_RoughAdj();
-//  SPO2_FineAdj();
+  SPO2_FineAdj();
   SPO2_SetDAC(SPO2_DAC_Value);
+  SPO2_Adj_SendERROR();
+
 }

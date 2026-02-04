@@ -19,3 +19,5 @@
 .\objects\dac.o: ..\FW\inc\stm32f10x_tim.h
 .\objects\dac.o: ..\FW\inc\stm32f10x_usart.h
 .\objects\dac.o: ..\FW\inc\misc.h
+.\objects\dac.o: ..\HW\UART1\UART1.h
+.\objects\dac.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h

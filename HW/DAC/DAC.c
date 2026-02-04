@@ -19,6 +19,7 @@
 *********************************************************************************************************/
 #include "DAC.h"
 #include "stm32f10x_conf.h"
+#include "UART1.h"
 
 /*********************************************************************************************************
 *                                              宏定义
@@ -136,8 +137,14 @@ void InitDAC(void)
 *********************************************************************************************************/
 void SPO2_SetDAC(int dacValue)
 {
+  static int dac_history = 0;
 //设置DAC数据（12位右对齐）
   DAC_SetChannel1Data(DAC_Align_12b_R, dacValue);
   //软件触发更新输出
   DAC_SoftwareTriggerCmd(DAC_Channel_1, ENABLE);
+  if(dacValue != dac_history)
+  {
+    printf("[[3,%d]]\r\n",dacValue); //设置血氧测量结果显示
+  }
+  dac_history = dacValue;
 }

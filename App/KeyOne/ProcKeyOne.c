@@ -105,12 +105,12 @@ void  ProcKeyDownKey2(void)
   if(SPO2_Filter_Flag == '0') 
   {
     SPO2_Filter_Flag = '1';      
-    printf("[[4,%c]]\r\n",SPO2_Filter_Flag); 
+//    printf("[[4,%c]]\r\n",SPO2_Filter_Flag); 
   }
   else 
   {
     SPO2_Filter_Flag = '0';
-    printf("[[4,%c]]\r\n",SPO2_Filter_Flag); 
+//    printf("[[4,%c]]\r\n",SPO2_Filter_Flag); 
   }
   //printf("Change SPO2_Filter_Flag:%c\n",SPO2_Filter_Flag);
 }

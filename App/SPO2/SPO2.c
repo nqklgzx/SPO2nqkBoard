@@ -81,7 +81,7 @@ void SPO2_Light_Switch(void);
 *********************************************************************************************************/
 /*********************************************************************************************************
 * 函数名称: SPO2_Start_Check
-* 函数功能: 呼吸开始测量Flag检测
+* 函数功能: 血氧开始测量Flag检测
 * 输入参数: void
 * 输出参数: void
 * 返 回 值: void
@@ -97,7 +97,7 @@ static u8 SPO2_Start_Check()
     {
       SPO2_START_FLAG = SPO2_START;
       SPO2_ZERO_PIN_START
-      printf("INFO：呼吸信号展示开始\r\n");
+      printf("INFO：血氧信号展示开始\r\n");
     }
   }
   else if(SPO2_START_INFO == SPO2_STOP)
@@ -106,7 +106,7 @@ static u8 SPO2_Start_Check()
     {
       SPO2_START_FLAG = SPO2_STOP;
       SPO2_ZERO_PIN_STOP
-      printf("INFO：呼吸信号展示停止\r\n");    
+      printf("INFO：血氧信号展示停止\r\n");    
     }
   }
   return SPO2_START_FLAG;
@@ -114,7 +114,7 @@ static u8 SPO2_Start_Check()
 
 /*********************************************************************************************************
 * 函数名称: SPO2_ADC_Read_RED
-* 函数功能: 呼吸ADC值读取存入
+* 函数功能: 血氧ADC值读取存入
 * 输入参数: void
 * 输出参数: void
 * 返 回 值: void
@@ -142,7 +142,7 @@ static void SPO2_ADC_Read_RED()
 
 /*********************************************************************************************************
 * 函数名称: SPO2_ADC_Read_IR
-* 函数功能: 呼吸ADC值读取存入
+* 函数功能: 血氧ADC值读取存入
 * 输入参数: void
 * 输出参数: void
 * 返 回 值: void
@@ -170,7 +170,7 @@ static void SPO2_ADC_Read_IR()
 
 /*********************************************************************************************************
 * 函数名称: SPO2_Wave_Send
-* 函数功能: 呼吸波形数据发送
+* 函数功能: 血氧波形数据发送
 * 输入参数: void
 * 输出参数: void
 * 返 回 值: void
@@ -233,7 +233,7 @@ static  void  ConfigSPO2GPIO(void)
 *********************************************************************************************************/
 /*********************************************************************************************************
 * 函数名称: SPO2_Init
-* 函数功能: 呼吸测量初始化函数
+* 函数功能: 血氧测量初始化函数
 * 输入参数: void
 * 输出参数: void
 * 返 回 值: void
@@ -245,18 +245,23 @@ void SPO2_Init()
   SPO2_DAC_Value = 20;
   SPO2_SetDAC(SPO2_DAC_Value);
   ConfigSPO2GPIO();
-  SPO2_START_INFO = SPO2_STOP;
+  SPO2_START_INFO = SPO2_START;
   printf("{{1,脉率}}\r\n");
   printf("{{2,血氧}}\r\n");
-  printf("{{3,HRFlag}}\r\n");
-  printf("{{4,Filter}}\r\n");
-  printf("{{5,isERROR}}\r\n");
+  printf("{{3,ADC值}}\r\n");
+  printf("{{4,调光}}\r\n");
+  printf("{{5,导联检测}}\r\n");
+  printf("[[1,%s]]\r\n","---"); //设置血氧测量结果显示
+  printf("[[2,%s]]\r\n","---"); //设置血氧测量结果显示
+  printf("[[3,%s]]\r\n","---"); //设置血氧测量结果显示
+  printf("[[4,%s]]\r\n","---"); //设置血氧测量结果显示
+  printf("[[5,%s]]\r\n","---"); //设置血氧测量结果显示
   SPO2_Regular_Flag = SPO2_Task_NO;
 }
 
 /*********************************************************************************************************
 * 函数名称: SPO2_Task
-* 函数功能: 呼吸测量任务主入口
+* 函数功能: 血氧测量任务主入口
 * 输入参数: void
 * 输出参数: void
 * 返 回 值: void
@@ -265,8 +270,7 @@ void SPO2_Init()
 *********************************************************************************************************/
 void SPO2_Task()
 {  
-  static u8 test_point = '0';
-    
+  int SPO2_Filter_Init_Cnt = 0;   //初始化滤波：当细调完成后+1，不归零，整个程序只运行一次
   if(SPO2_Start_Check()==SPO2_STOP) //检查开始测量信号Flag
   {
     return;    
@@ -274,6 +278,10 @@ void SPO2_Task()
   
   SPO2_Light_Switch();
 
+  if(SPO2_Finger_Flag == SPO2_LEAD_OFF)
+  {
+    return;
+  }
   if(SPO2_Regular_Flag == SPO2_Task_NO)
   {
     return;
@@ -284,24 +292,25 @@ void SPO2_Task()
   
   if(WAVE_NUM >= SPO2_ADC_arrMAX)      //当存满了
   {
-    SPO2_Calculate();      //计算心率
-    WAVE_NUM=0;
-    switch(test_point)
+    if(SPO2_FineAdj_Stable_Flag == SPO2_FineAdj_Stable)
     {
-      case '0':
-        test_point ++;
-        printf("[[3,%c]]\r\n",test_point); //设置测量结果显示
-      break;
-      case '1':
-        test_point = '0';
-        printf("[[3,%c]]\r\n",test_point); //设置测量结果显示
-      break;
+      SPO2_Calculate();      //计算心率
+      WAVE_NUM=0;
+      SPO2_Filter_Init_Cnt++;
+      if(SPO2_Filter_Init_Cnt >= 1)
+      {
+        if(SPO2_Filter_Flag == '0')
+        {
+          SPO2_Filter_Flag = '1';      
+        }
+        SPO2_Filter_Init_Cnt =0;
+      }
     }
   }
 }
 /*********************************************************************************************************
 * 函数名称: SPO2_Start_Check
-* 函数功能: 呼吸开始测量Flag检测
+* 函数功能: 血氧开始测量Flag检测
 * 输入参数: void
 * 输出参数: void
 * 返 回 值: void
@@ -320,7 +329,7 @@ void SPO2_StartInfo_Change(char value)
 
 /*********************************************************************************************************
 * 函数名称: SPO2_Start_Check
-* 函数功能: 呼吸开始测量Flag检测
+* 函数功能: 血氧开始测量Flag检测
 * 输入参数: void
 * 输出参数: void
 * 返 回 值: void
@@ -334,7 +343,7 @@ u8 SPO2_StartInfo_Get()
 
 /*********************************************************************************************************
 * 函数名称: SPO2_Light_Change
-* 函数功能: 呼吸开始测量Flag检测
+* 函数功能: 血氧开始测量Flag检测
 * 输入参数: void
 * 输出参数: void
 * 返 回 值: void
@@ -363,7 +372,7 @@ void SPO2_Light_Change(int RED,int IR)
 }
 /*********************************************************************************************************
 * 函数名称: SPO2_Light_Change
-* 函数功能: 呼吸开始测量Flag检测
+* 函数功能: 血氧开始测量Flag检测
 * 输入参数: void
 * 输出参数: void
 * 返 回 值: void

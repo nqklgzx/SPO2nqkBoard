@@ -27,7 +27,7 @@
 *********************************************************************************************************/
 #define SPO2_Reference_Multiple 0.85
 #define SPO2_Statistic_Num 800
-#define SPO2_PeakGap 10     //60÷最大呼吸率÷采样时间间隔
+#define SPO2_PeakGap 10     //60÷最大脉率÷采样时间间隔
 #define SPO2_spo2_R_ValueBuff_MaxNum 4 //R值缓冲
 #define SPO2_R_TABLE_LEN  (sizeof(SPO2_R_Table) / sizeof(SPO2_R_Table[0]))
 #define SPO2_MINMAX_SMOOTH_DEPTH 5  // 平滑深度，取最近5次计算的结果
@@ -92,7 +92,6 @@ int SPO2_HR_AverageTime(int SPO2_PeakNum);
 void SPO2_HR_Cal(float SPO2_HR_TM_Mid);
 float GetMidValue1(float* data,unsigned short len);
 float SPO2_HR_FindMid(int SPO2_PeakNum);
-void SPO2_HR_MinMax(float* WaveData,int LightType);
 
 void SPO2_Send(void);
 void Bubble_Sort(float* BuffData,int BuffNum);
@@ -106,34 +105,6 @@ void SPO2_spo2_Calculate(void);
 /*********************************************************************************************************
 *                                              内部函数实现
 *********************************************************************************************************/
-/*********************************************************************************************************
-* 函数名称: SPO2_HR_FindReference
-* 函数功能: 呼吸率最大值查找参考值
-* 输入参数: void
-* 输出参数: void
-* 返 回 值: void
-* 创建日期: 2025年11月26日
-* 注    意:
-*********************************************************************************************************/
-void SPO2_HR_MinMax(float* WaveData,int LightType)
-{ 
-  float Max = WaveData[0];
-  float Min = WaveData[0];
-  int i = 0;
-  for(i = 0;i < SPO2_ADC_arrMAX ; i++)
-  {
-    if(WaveData[i] > Max)
-    {
-      Max = WaveData[i];
-    }
-    if(WaveData[i] < Min)
-    {
-      Min = WaveData[i];
-    }
-  }
-  SPO2_MinMax_Buffer[LightType][Maximum] = Max;
-  SPO2_MinMax_Buffer[LightType][Minimum] = Min;
-}
 /*********************************************************************************************************
 * 函数名称: SPO2_HR_MinMax_Robust
 * 函数功能: 鲁棒性最值提取（平滑滤波 + 剔除异常值）
@@ -224,7 +195,6 @@ int SPO2_HR_FindPeak(float* WaveData,float SPO2_Reference)
 {
   int SPO2_PeakNum = 0;
   int i = 0;
-  int SPO2_Peak_flag = 0;
   for(i = 0;i < SPO2_ADC_arrMAX - 1 ; i++)
   {
     if(WaveData[i] >= SPO2_Reference &&  // 超过阈值
@@ -238,8 +208,6 @@ int SPO2_HR_FindPeak(float* WaveData,float SPO2_Reference)
       if(i-SPO2_Peak_Index[SPO2_PeakNum-1]>SPO2_PeakGap)
       {
         SPO2_Peak_Index[SPO2_PeakNum++] = i;
-        SPO2_Peak_flag = 1- SPO2_Peak_flag;
-        printf("[[4,%d]]\r\n",SPO2_Peak_flag); //设置测量结果显示
       }
     }
   }
@@ -314,7 +282,7 @@ void SPO2_spo2_Calculate()
 {
   float SPO2_singleR_Value = SPO2_spo2_singleR();
   float SPO2_R_Final = SPO2_spo2_SmoothR(SPO2_singleR_Value);
-  SPO2_spo2 = SPO2_Get_spo2_From_R(SPO2_singleR_Value);
+  SPO2_spo2 = SPO2_Get_spo2_From_R(SPO2_R_Final);
 }
 /*********************************************************************************************************
 * 函数名称: SPO2_spo2_singleR
@@ -328,7 +296,7 @@ void SPO2_spo2_Calculate()
 float SPO2_spo2_singleR()
 {
   float SPO2_RED_ADRng , SPO2_IR_ADRng,SPO2_singleR_Value;
-  int SPO2_rValueGain = 1500;     //方便后续判断设置的增益   //学术造假，正确的是1000，此处为经验公式2.0
+  int SPO2_rValueGain = 1100;     //方便后续判断设置的增益   //学术造假，正确的是1000，此处为经验公式2.0
   SPO2_RED_ADRng = SPO2_MinMax_Buffer[RED][Maximum] - SPO2_MinMax_Buffer[RED][Minimum];
   SPO2_IR_ADRng = SPO2_MinMax_Buffer[IR][Maximum] - SPO2_MinMax_Buffer[IR][Minimum];
   SPO2_singleR_Value = (SPO2_RED_ADRng ) * SPO2_rValueGain / (SPO2_IR_ADRng );
@@ -396,6 +364,10 @@ float SPO2_Get_spo2_From_R(float R_value)
           return SPO2_R_Table[i].spo2;
       }
     }
+  }
+  if(R_value<=590)
+  {
+    return 99;
   }
   // R值超出表格范围（<590 或 >1200），返回0作为异常标识
   //printf("[[5,%s]]\r\n","R2SPO2"); //设置血氧测量结果ERROR显示
@@ -466,8 +438,6 @@ float Calc_Median(float* BuffData,int BuffNum)
 *********************************************************************************************************/
 void SPO2_Calculate()
 {
-//  SPO2_HR_MinMax(SPO2_IR_WaveData,IR);
-//  SPO2_HR_MinMax(SPO2_RED_WaveData,RED);
   SPO2_HR_MinMax_Robust(SPO2_IR_WaveData, IR);
   SPO2_HR_MinMax_Robust(SPO2_RED_WaveData, RED);  
   SPO2_HeartRate_Calculate();      //计算心率
